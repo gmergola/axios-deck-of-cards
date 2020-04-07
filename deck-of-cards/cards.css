@@ -1,0 +1,16 @@
+body {
+  background-color:green;
+}
+
+#cards {
+  position: relative;
+  top: 100px;
+
+}
+
+.card-img {
+  position: absolute;
+  width: 320px;
+  height: 400px;
+}
+
