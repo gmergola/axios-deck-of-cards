@@ -1,4 +1,4 @@
-const BASE_URL = 'https://pokeapi.co/api/v2/pokemon/';
+const BASE_URL = 'https://pokeapi.co/api/v2/pokemon';
 
 async function getPokemons (){
   return await axios.get('https://pokeapi.co/api/v2/pokemon?limit=964')
@@ -6,62 +6,70 @@ async function getPokemons (){
 
 
 async function getThree(){
+  let pokes = {}
+  let pokemon;
+  try{
+     pokemon = await Promise.all([axios.get(`${BASE_URL}/${Math.floor(Math.random() * 964)}/`),
+                                   axios.get(`${BASE_URL}/${Math.floor(Math.random() * 964)}/`),
+                                   axios.get(`${BASE_URL}/${Math.floor(Math.random() * 964)}/`)
+                                  ])
+  }catch ( err ){
+    let failed = $("<h1>")
+      .text("sorry... system failed. Press the button again")
+      .attr("class", "error")
+    $("#cards").html(failed)
+  }
+  name1 = pokemon[0].data.name
+  name2 = pokemon[1].data.name
+  name3 = pokemon[2].data.name
 
-let pokemon = await Promise.all([axios.get(`${BASE_URL}2/`) ,
-                                 axios.get(`${BASE_URL}300/`), 
-                                 axios.get(`${BASE_URL}564/`)])
+  species1 = await axios.get(pokemon[0].data.species.url)
+  species2 = await axios.get(pokemon[1].data.species.url)
+  species3 = await axios.get(pokemon[2].data.species.url)
+  
+  for(let flavObj of species1.data.flavor_text_entries){
+    if(flavObj.language.name === "en"){
+      pokes[name1]= [name1, flavObj.flavor_text, pokemon[0].data.sprites.front_shiny]
+    }
+  }
+  for(let flavObj of species2.data.flavor_text_entries){
+    if(flavObj.language.name === "en"){
+      pokes[name2] = [name2, flavObj.flavor_text, pokemon[1].data.sprites.front_shiny]
+    }
+  }
+  for(let flavObj of species3.data.flavor_text_entries){
+    if(flavObj.language.name === "en"){
+      pokes[name3] = [name3, flavObj.flavor_text, pokemon[2].data.sprites.front_shiny]
+    }
+  }
 
-let name1 = pokemon[0].data.name;
-let name2 = pokemon[1].data.name;
-let name3 = pokemon[2].data.name;
-// let species1 = pokemon[0].data.species;
-// console.log(pokemon[0].data);
-
-let species1 = await axios.get(pokemon[0].data.species.url);
-let species2 = await axios.get(pokemon[1].data.species.url);
-let species3 = await axios.get(pokemon[2].data.species.url);
-
-console.log(name1, species1.data.flavor_text_entries[17].flavor_text);
-
-
+  return pokes;
 }
 
-// axios.get('http://numbersapi.com/33/trivia?json')
-// .then( (data) => {
-//   console.log("second!")
-//   console.log(data);
-// })
+async function addPokesToPage(){
+  $("#cards").empty()
+  pokeObj = await getThree();
+  for ( let key in pokeObj){
+    let pokeDiv = $("<div>")
+      .attr("class", "poke-div card")
 
-// console.log("genna")
+    let name = $("<b>")
+      .text(pokeObj[key][0])
+      .attr("class", "name card-title")
 
-// async function mulNum (){
-//   setOfNums = await axios.get('http://numbersapi.com/1..3,10')
+    let fact = $("<p>")
+      .text(pokeObj[key][1])
+      .attr("class", "fact card-text")
 
-//   for(let num in setOfNums.data){
-//     console.log(setOfNums.data[num])
-//   }
-// }
+    let image = $("<img>")
+      .attr("src", pokeObj[key][2])
+      .attr("class", "poke-img card-img-top")
 
-// axios.get('http://numbersapi.com/1..3,10')
-// .then((response) => {
-//   for(let num in response.data){
-//     console.log(response.data[num])
-//   }
-// })
+    pokeDiv.append(name)
+    pokeDiv.append(fact)
+    pokeDiv.append(image)
+    $("#cards").append(pokeDiv)
+  }
+}
 
-// async function get4Facts(){
-//   let facts = await Promise.all([
-//     axios.get('http://numbersapi.com/33/trivia'),
-//     axios.get('http://numbersapi.com/33/trivia'),
-//     axios.get('http://numbersapi.com/33/trivia'),
-//     axios.get('http://numbersapi.com/33/trivia')
-//   ])
-
-//   console.log(`The first fact is ${facts[1].data}`)
-//   console.log(`The second fact is ${facts[1].data}`)
-//   console.log(`The third fact is ${facts[2].data}`)
-//   console.log(`The fourth fact is ${facts[3].data}`)
-// }
-
-
-
+$("#button").on("click", addPokesToPage)

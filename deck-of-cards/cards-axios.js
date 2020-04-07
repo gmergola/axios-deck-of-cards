@@ -18,7 +18,7 @@ async function addCardToPage(){
   let cardImage = $('<img>');
   cardImage.attr("src", cardData.cards[0].image)
            .attr("class", "card-img")
-           .css(`transform`, `rotate(${rotation}deg)`);
+           .css('transform', `rotate(${rotation}deg)`);
            
   $("#cards").append(cardImage);
   rotation += 10;

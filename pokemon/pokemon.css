@@ -1,0 +1,24 @@
+body{
+  background: black;
+}
+
+.poke-div{
+  display: inline-block;
+  color: white;
+  background-color: burlywood;
+  border: solid white 5px;
+  border-radius: 30px;
+  width: 300px;
+  height: 500px;
+  text-align: center;
+  margin-top: 50px;
+  margin-right: 20px;
+}
+
+.error{
+  color: white;
+}
+
+.name{
+  font-size: 30px;
+}
